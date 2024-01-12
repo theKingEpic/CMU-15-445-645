@@ -37,6 +37,7 @@ using AbstractExpressionRef = std::shared_ptr<AbstractExpression>;
 /**
  * AbstractExpression is the base class of all the expressions in the system.
  * Expressions are modeled as trees, i.e. every expression may have a variable number of children.
+ * AbstractExpression是系统中所有表达式的基类。表达式被建模为树，即每个表达式可以有一个可变数量的子表达式。
  */
 class AbstractExpression {
  public:
@@ -44,6 +45,7 @@ class AbstractExpression {
    * Create a new AbstractExpression with the given children and return type.
    * @param children the children of this abstract expression
    * @param ret_type the return type of this abstract expression when it is evaluated
+   * 此抽象表达式在求值时的返回类型
    */
   AbstractExpression(std::vector<AbstractExpressionRef> children, TypeId ret_type)
       : children_{std::move(children)}, ret_type_{ret_type} {}
@@ -61,11 +63,13 @@ class AbstractExpression {
    * @param right_tuple The right tuple
    * @param right_schema The right tuple's schema
    * @return The value obtained by evaluating a JOIN on the left and right
+   * 通过对左右两个JOIN求值获得的值
    */
   virtual auto EvaluateJoin(const Tuple *left_tuple, const Schema &left_schema, const Tuple *right_tuple,
                             const Schema &right_schema) const -> Value = 0;
 
-  /** @return the child_idx'th child of this expression */
+  /** @return the child_idx'th child of this expression
+   * 该表达式的第child_idx个子节点*/
   auto GetChildAt(uint32_t child_idx) const -> const AbstractExpressionRef & { return children_[child_idx]; }
 
   /** @return the children of this expression, ordering may matter */

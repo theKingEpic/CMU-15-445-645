@@ -90,18 +90,18 @@ $ build_support/packages.sh
 Then run the following commands to build the system:
 
 ```
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make -j`nproc`
 ```
 
 If you want to compile the system in debug mode, pass in the following flag to cmake:
 Debug mode:
 
 ```
-$ cmake -DCMAKE_BUILD_TYPE=Debug ..
-$ make -j`nproc`
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+make -j`nproc`
 ```
 This enables [AddressSanitizer](https://github.com/google/sanitizers) by default.
 

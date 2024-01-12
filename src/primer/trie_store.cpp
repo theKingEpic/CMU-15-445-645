@@ -22,11 +22,22 @@ auto TrieStore::Get(std::string_view key) -> std::optional<ValueGuard<T>> {
   //     trie while holding the root lock.
   // (2) Lookup the value in the trie.
   // (3) If the value is found, return a ValueGuard object that holds a reference to the value and the
-  //     root. Otherwise, return std::nullptr.
+  //     root. Otherwise, return std::nullopt.
+  // throw NotImplementedException("TrieStore::Get is not implemented.");
   // (1)获取根锁，获取根，然后释放根锁。当持有根锁时，不要在tree中查找值。
+  Trie root;
+  {
+    std::scoped_lock<std::mutex> lock(root_lock_);
+    root = root_;
+  }  // 在这个块结束时 root_lock_ 会被自动解锁
   // (2)查找树中的值。
-  // (3)如果找到该值，返回一个ValueGuard对象，该对象包含对该值和根的引用。否则，返回std::nullptr。
-  throw NotImplementedException("TrieStore::Get is not implemented.");
+  const T *value = root.Get<T>(key);
+  // (3)如果找到该值，返回一个ValueGuard对象，该对象包含对该值和根的引用。否则，返回std::nullopt。
+  if (value != nullptr) {
+    ValueGuard<T> vg(root, *value);
+    return std::optional<ValueGuard<T>>(vg);
+  }
+  return std::nullopt;
 }
 
 template <class T>
@@ -35,7 +46,25 @@ void TrieStore::Put(std::string_view key, T value) {
   // The logic should be somehow similar to `TrieStore::Get`.
   // 你需要确保一次只有一个写入器。想想你如何做到这一点。
   // 逻辑应该类似于' TrieStore::Get '。
-  throw NotImplementedException("TrieStore::Put is not implemented.");
+  // (1)使用unique_lock作为写锁
+  // (2)获取根锁，获取根，然后释放根锁。当持有根锁时，不要在tree中查找值。
+  // (3)插入。
+  // (4)修改根
+  // throw NotImplementedException("TrieStore::Put is not implemented.");
+  std::unique_lock<std::mutex> write_lock(write_lock_);
+
+  std::unique_ptr<Trie> root_ptr;
+  {
+    std::scoped_lock<std::mutex> lock(root_lock_);
+    root_ptr = std::make_unique<Trie>(root_);
+  }
+
+  Trie new_root = root_ptr->Put(key, std::move(value));
+
+  {
+    std::scoped_lock<std::mutex> lock(root_lock_);
+    root_ = new_root;
+  }
 }
 
 void TrieStore::Remove(std::string_view key) {
@@ -43,7 +72,21 @@ void TrieStore::Remove(std::string_view key) {
   // The logic should be somehow similar to `TrieStore::Get`.
   // 你需要确保一次只有一个写入器。想想你如何做到这一点。
   // 逻辑应该类似于' TrieStore::Get '。
-  throw NotImplementedException("TrieStore::Remove is not implemented.");
+  // throw NotImplementedException("TrieStore::Remove is not implemented.");
+  std::unique_lock<std::mutex> write_lock(write_lock_);
+
+  std::unique_ptr<Trie> root_ptr;
+  {
+    std::scoped_lock<std::mutex> lock(root_lock_);
+    root_ptr = std::make_unique<Trie>(root_);
+  }
+
+  Trie new_root = root_ptr->Remove(key);
+
+  {
+    std::scoped_lock<std::mutex> lock(root_lock_);
+    root_ = new_root;
+  }
 }
 
 // Below are explicit instantiation of template functions.

@@ -31,7 +31,7 @@ set(BUSTUB_LIBS
         bustub_planner
         bustub_primer
         bustub_optimizer
-        )
+)
 
 find_package(Threads REQUIRED)
 
@@ -41,7 +41,7 @@ set(BUSTUB_THIRDPARTY_LIBS
         fmt
         libfort::fort
         Threads::Threads
-        )
+)
 
 target_link_libraries(
         bustub

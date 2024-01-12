@@ -39,7 +39,15 @@ auto Planner::GetFuncCallFromFactory(const std::string &func_name, std::vector<A
   // 1. check if the parsed function name is "lower" or "upper".
   // 2. verify the number of args (should be 1), refer to the test cases for when you should throw an `Exception`.
   // 3. return a `StringExpression` std::shared_ptr.
-  throw Exception(fmt::format("func call {} not supported in planner yet", func_name));
+  // 1。检查解析的函数名是“lower”还是“upper”。
+  // 2。验证参数的数量(应该是1)，请参考测试用例，以确定何时应该抛出'Exception'
+  // 3。返回一个'StringExpression' std::shared ptr。
+  // throw Exception(fmt::format("func call {} not supported in planner yet", func_name));
+  if (args.size() != 1) {
+    throw Exception("the number of args should be 1");
+  }
+  return std::make_shared<StringExpression>(
+      args[0], func_name == "lower" ? StringExpressionType::Lower : StringExpressionType::Upper);
 }
 
 }  // namespace bustub

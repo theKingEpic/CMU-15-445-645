@@ -50,8 +50,8 @@ auto Trie::Put(std::string_view key, T value) const -> Trie {
   // 你应该遍历字典树，并在必要时创建新节点。（Clone后可以修改）
   // 如果对应于键的节点已经存在，你应该创建一个新的 `TrieNodeWithValue`。 key可能为空
   // throw NotImplementedException("Trie::Remove is not implemented.");
-  std::shared_ptr<const TrieNode> cur_old = GetRoot() ? GetRoot() : nullptr;
-  std::shared_ptr<TrieNode> cur_new = GetRoot() ? GetRoot()->Clone() : std::make_shared<TrieNode>();
+  std::shared_ptr<const TrieNode> cur_old = root_ ? root_ : nullptr;
+  std::shared_ptr<TrieNode> cur_new = root_ ? root_->Clone() : std::make_shared<TrieNode>();
   std::shared_ptr<TrieNode> head_node = std::make_shared<TrieNode>();
   head_node->children_['a'] = cur_new;
   std::shared_ptr<T> value_ptr = std::make_shared<T>(std::move(value));
@@ -139,8 +139,8 @@ auto Trie::Remove(std::string_view key) const -> Trie {
   }
 
   // 给根节点加个（父）头结点，键为'a'，key加个'a'，去根节点特殊化
-  std::shared_ptr<TrieNode> cur_new = GetRoot()->Clone();
-  std::shared_ptr<const TrieNode> cur_old = GetRoot();
+  std::shared_ptr<TrieNode> cur_new = root_->Clone();
+  std::shared_ptr<const TrieNode> cur_old = root_;
   std::shared_ptr<TrieNode> head = std::make_shared<TrieNode>();
   head->children_['a'] = cur_new;
   std::shared_ptr<TrieNode> head_father = std::make_shared<TrieNode>();

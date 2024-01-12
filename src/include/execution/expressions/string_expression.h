@@ -34,6 +34,7 @@ enum class StringExpressionType { Lower, Upper };
 
 /**
  * StringExpression represents two expressions being computed.
+ * StringExpression表示正在计算的两个表达式。
  */
 class StringExpression : public AbstractExpression {
  public:
@@ -46,7 +47,16 @@ class StringExpression : public AbstractExpression {
 
   auto Compute(const std::string &val) const -> std::string {
     // TODO(student): implement upper / lower.
-    return {};
+    std::string res = val;
+    switch (expr_type_) {
+      case StringExpressionType::Upper:
+        std::transform(res.begin(), res.end(), res.begin(), ::toupper);
+        break;
+      case StringExpressionType::Lower:
+        std::transform(res.begin(), res.end(), res.begin(), ::tolower);
+        break;
+    }
+    return res;
   }
 
   auto Evaluate(const Tuple *tuple, const Schema &schema) const -> Value override {

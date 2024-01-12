@@ -27,6 +27,7 @@ TEST(TrieDebugger, TestCase) {
       // Test the first 3 values from the random generator.
       case 0:
         ASSERT_EQ(value, 128) << "Random generator not portable, please post on Piazza for help.";
+        //随机生成器不具备可移植性，请在 Piazza 上寻求帮助
         break;
       case 1:
         ASSERT_EQ(value, 16) << "Random generator not portable, please post on Piazza for help.";
@@ -39,7 +40,12 @@ TEST(TrieDebugger, TestCase) {
     }
     trie = trie.Put<uint32_t>(key, value);
   }
-
+  auto v1 = trie.GetRoot()->children_.size();
+  auto v2 = trie.GetRoot()->children_.at('9')->children_.size();
+  auto v3 = *trie.Get<uint32_t>("969");
+  std::cout << v1 << std::endl;
+  std::cout << v2 << std::endl;
+  std::cout << v3 << std::endl;
   // Put a breakpoint here.
 
   // (1) How many children nodes are there on the root?
@@ -57,6 +63,7 @@ TEST(TrieDebugger, TestCase) {
   // (3) What's the value for `969`?
   // Replace `CASE_3_YOUR_ANSWER` in `trie_answer.h` with the correct answer.
   if (CASE_3_YOUR_ANSWER != Case3CorrectAnswer()) {
+    std::cout << trie.Get<uint32_t>("969");
     ASSERT_TRUE(false) << "case 3 not correct";
   }
 }
